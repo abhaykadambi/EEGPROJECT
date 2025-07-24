@@ -1,0 +1,617 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3051A7B22E320FCE004210F9 /* EEG_EQUIPMENT_ASSISTApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051A7B12E320FCE004210F9 /* EEG_EQUIPMENT_ASSISTApp.swift */; };
+		3051A7B42E320FCE004210F9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051A7B32E320FCE004210F9 /* ContentView.swift */; };
+		3051A7B62E320FCE004210F9 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051A7B52E320FCE004210F9 /* Item.swift */; };
+		3051A7B82E320FCF004210F9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3051A7B72E320FCF004210F9 /* Assets.xcassets */; };
+		3051A7BB2E320FCF004210F9 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3051A7BA2E320FCF004210F9 /* Preview Assets.xcassets */; };
+		3051A7C52E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051A7C42E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTTests.swift */; };
+		3051A7CF2E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051A7CE2E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITests.swift */; };
+		3051A7D12E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051A7D02E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITestsLaunchTests.swift */; };
+		3051A7DF2E3215C2004210F9 /* CameraView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051A7DE2E3215C2004210F9 /* CameraView.swift */; };
+		3051A7E12E3215F8004210F9 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051A7E02E3215F8004210F9 /* CameraViewController.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		3051A7C12E320FCF004210F9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3051A7A62E320FCE004210F9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3051A7AD2E320FCE004210F9;
+			remoteInfo = "EEG EQUIPMENT ASSIST";
+		};
+		3051A7CB2E320FCF004210F9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 3051A7A62E320FCE004210F9 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3051A7AD2E320FCE004210F9;
+			remoteInfo = "EEG EQUIPMENT ASSIST";
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		3051A7AE2E320FCE004210F9 /* EEG EQUIPMENT ASSIST.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EEG EQUIPMENT ASSIST.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3051A7B12E320FCE004210F9 /* EEG_EQUIPMENT_ASSISTApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EEG_EQUIPMENT_ASSISTApp.swift; sourceTree = "<group>"; };
+		3051A7B32E320FCE004210F9 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		3051A7B52E320FCE004210F9 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		3051A7B72E320FCF004210F9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3051A7BA2E320FCF004210F9 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		3051A7C02E320FCF004210F9 /* EEG EQUIPMENT ASSISTTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "EEG EQUIPMENT ASSISTTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3051A7C42E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EEG_EQUIPMENT_ASSISTTests.swift; sourceTree = "<group>"; };
+		3051A7CA2E320FCF004210F9 /* EEG EQUIPMENT ASSISTUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "EEG EQUIPMENT ASSISTUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		3051A7CE2E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EEG_EQUIPMENT_ASSISTUITests.swift; sourceTree = "<group>"; };
+		3051A7D02E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EEG_EQUIPMENT_ASSISTUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		3051A7DD2E3214F0004210F9 /* EEG-EQUIPMENT-ASSISTUITests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "EEG-EQUIPMENT-ASSISTUITests-Info.plist"; sourceTree = SOURCE_ROOT; };
+		3051A7DE2E3215C2004210F9 /* CameraView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraView.swift; sourceTree = "<group>"; };
+		3051A7E02E3215F8004210F9 /* CameraViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
+		3051A7E22E321CA3004210F9 /* EEG-EQUIPMENT-ASSIST-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "EEG-EQUIPMENT-ASSIST-Info.plist"; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3051A7AB2E320FCE004210F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3051A7BD2E320FCF004210F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3051A7C72E320FCF004210F9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		3051A7A52E320FCE004210F9 = {
+			isa = PBXGroup;
+			children = (
+				3051A7B02E320FCE004210F9 /* EEG EQUIPMENT ASSIST */,
+				3051A7C32E320FCF004210F9 /* EEG EQUIPMENT ASSISTTests */,
+				3051A7CD2E320FCF004210F9 /* EEG EQUIPMENT ASSISTUITests */,
+				3051A7AF2E320FCE004210F9 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		3051A7AF2E320FCE004210F9 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3051A7AE2E320FCE004210F9 /* EEG EQUIPMENT ASSIST.app */,
+				3051A7C02E320FCF004210F9 /* EEG EQUIPMENT ASSISTTests.xctest */,
+				3051A7CA2E320FCF004210F9 /* EEG EQUIPMENT ASSISTUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		3051A7B02E320FCE004210F9 /* EEG EQUIPMENT ASSIST */ = {
+			isa = PBXGroup;
+			children = (
+				3051A7E22E321CA3004210F9 /* EEG-EQUIPMENT-ASSIST-Info.plist */,
+				3051A7B12E320FCE004210F9 /* EEG_EQUIPMENT_ASSISTApp.swift */,
+				3051A7B32E320FCE004210F9 /* ContentView.swift */,
+				3051A7DE2E3215C2004210F9 /* CameraView.swift */,
+				3051A7E02E3215F8004210F9 /* CameraViewController.swift */,
+				3051A7B52E320FCE004210F9 /* Item.swift */,
+				3051A7B72E320FCF004210F9 /* Assets.xcassets */,
+				3051A7B92E320FCF004210F9 /* Preview Content */,
+			);
+			path = "EEG EQUIPMENT ASSIST";
+			sourceTree = "<group>";
+		};
+		3051A7B92E320FCF004210F9 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				3051A7BA2E320FCF004210F9 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		3051A7C32E320FCF004210F9 /* EEG EQUIPMENT ASSISTTests */ = {
+			isa = PBXGroup;
+			children = (
+				3051A7C42E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTTests.swift */,
+			);
+			path = "EEG EQUIPMENT ASSISTTests";
+			sourceTree = "<group>";
+		};
+		3051A7CD2E320FCF004210F9 /* EEG EQUIPMENT ASSISTUITests */ = {
+			isa = PBXGroup;
+			children = (
+				3051A7DD2E3214F0004210F9 /* EEG-EQUIPMENT-ASSISTUITests-Info.plist */,
+				3051A7CE2E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITests.swift */,
+				3051A7D02E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITestsLaunchTests.swift */,
+			);
+			path = "EEG EQUIPMENT ASSISTUITests";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3051A7AD2E320FCE004210F9 /* EEG EQUIPMENT ASSIST */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3051A7D42E320FCF004210F9 /* Build configuration list for PBXNativeTarget "EEG EQUIPMENT ASSIST" */;
+			buildPhases = (
+				3051A7AA2E320FCE004210F9 /* Sources */,
+				3051A7AB2E320FCE004210F9 /* Frameworks */,
+				3051A7AC2E320FCE004210F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "EEG EQUIPMENT ASSIST";
+			productName = "EEG EQUIPMENT ASSIST";
+			productReference = 3051A7AE2E320FCE004210F9 /* EEG EQUIPMENT ASSIST.app */;
+			productType = "com.apple.product-type.application";
+		};
+		3051A7BF2E320FCF004210F9 /* EEG EQUIPMENT ASSISTTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3051A7D72E320FCF004210F9 /* Build configuration list for PBXNativeTarget "EEG EQUIPMENT ASSISTTests" */;
+			buildPhases = (
+				3051A7BC2E320FCF004210F9 /* Sources */,
+				3051A7BD2E320FCF004210F9 /* Frameworks */,
+				3051A7BE2E320FCF004210F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3051A7C22E320FCF004210F9 /* PBXTargetDependency */,
+			);
+			name = "EEG EQUIPMENT ASSISTTests";
+			productName = "EEG EQUIPMENT ASSISTTests";
+			productReference = 3051A7C02E320FCF004210F9 /* EEG EQUIPMENT ASSISTTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		3051A7C92E320FCF004210F9 /* EEG EQUIPMENT ASSISTUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3051A7DA2E320FCF004210F9 /* Build configuration list for PBXNativeTarget "EEG EQUIPMENT ASSISTUITests" */;
+			buildPhases = (
+				3051A7C62E320FCF004210F9 /* Sources */,
+				3051A7C72E320FCF004210F9 /* Frameworks */,
+				3051A7C82E320FCF004210F9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				3051A7CC2E320FCF004210F9 /* PBXTargetDependency */,
+			);
+			name = "EEG EQUIPMENT ASSISTUITests";
+			productName = "EEG EQUIPMENT ASSISTUITests";
+			productReference = 3051A7CA2E320FCF004210F9 /* EEG EQUIPMENT ASSISTUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3051A7A62E320FCE004210F9 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					3051A7AD2E320FCE004210F9 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+					3051A7BF2E320FCF004210F9 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 3051A7AD2E320FCE004210F9;
+					};
+					3051A7C92E320FCF004210F9 = {
+						CreatedOnToolsVersion = 15.4;
+						TestTargetID = 3051A7AD2E320FCE004210F9;
+					};
+				};
+			};
+			buildConfigurationList = 3051A7A92E320FCE004210F9 /* Build configuration list for PBXProject "EEG EQUIPMENT ASSIST" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 3051A7A52E320FCE004210F9;
+			productRefGroup = 3051A7AF2E320FCE004210F9 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				3051A7AD2E320FCE004210F9 /* EEG EQUIPMENT ASSIST */,
+				3051A7BF2E320FCF004210F9 /* EEG EQUIPMENT ASSISTTests */,
+				3051A7C92E320FCF004210F9 /* EEG EQUIPMENT ASSISTUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3051A7AC2E320FCE004210F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3051A7BB2E320FCF004210F9 /* Preview Assets.xcassets in Resources */,
+				3051A7B82E320FCF004210F9 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3051A7BE2E320FCF004210F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3051A7C82E320FCF004210F9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3051A7AA2E320FCE004210F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3051A7B42E320FCE004210F9 /* ContentView.swift in Sources */,
+				3051A7E12E3215F8004210F9 /* CameraViewController.swift in Sources */,
+				3051A7B62E320FCE004210F9 /* Item.swift in Sources */,
+				3051A7B22E320FCE004210F9 /* EEG_EQUIPMENT_ASSISTApp.swift in Sources */,
+				3051A7DF2E3215C2004210F9 /* CameraView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3051A7BC2E320FCF004210F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3051A7C52E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3051A7C62E320FCF004210F9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3051A7D12E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITestsLaunchTests.swift in Sources */,
+				3051A7CF2E320FCF004210F9 /* EEG_EQUIPMENT_ASSISTUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		3051A7C22E320FCF004210F9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3051A7AD2E320FCE004210F9 /* EEG EQUIPMENT ASSIST */;
+			targetProxy = 3051A7C12E320FCF004210F9 /* PBXContainerItemProxy */;
+		};
+		3051A7CC2E320FCF004210F9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3051A7AD2E320FCE004210F9 /* EEG EQUIPMENT ASSIST */;
+			targetProxy = 3051A7CB2E320FCF004210F9 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		3051A7D22E320FCF004210F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		3051A7D32E320FCF004210F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		3051A7D52E320FCF004210F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"EEG EQUIPMENT ASSIST/Preview Content\"";
+				DEVELOPMENT_TEAM = NK82P83Q9D;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "EEG-EQUIPMENT-ASSIST-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"We need camera access to detect faces and place EEG markers\"";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "kadambi-murugan.EEG-EQUIPMENT-ASSIST";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		3051A7D62E320FCF004210F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"EEG EQUIPMENT ASSIST/Preview Content\"";
+				DEVELOPMENT_TEAM = NK82P83Q9D;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "EEG-EQUIPMENT-ASSIST-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "\"We need camera access to detect faces and place EEG markers\"";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "kadambi-murugan.EEG-EQUIPMENT-ASSIST";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		3051A7D82E320FCF004210F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NK82P83Q9D;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "kadambi-murugan.EEG-EQUIPMENT-ASSISTTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EEG EQUIPMENT ASSIST.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EEG EQUIPMENT ASSIST";
+			};
+			name = Debug;
+		};
+		3051A7D92E320FCF004210F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NK82P83Q9D;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "kadambi-murugan.EEG-EQUIPMENT-ASSISTTests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EEG EQUIPMENT ASSIST.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/EEG EQUIPMENT ASSIST";
+			};
+			name = Release;
+		};
+		3051A7DB2E320FCF004210F9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NK82P83Q9D;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "EEG-EQUIPMENT-ASSISTUITests-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to detect faces.\n";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "kadambi-murugan.EEG-EQUIPMENT-ASSISTUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "EEG EQUIPMENT ASSIST";
+			};
+			name = Debug;
+		};
+		3051A7DC2E320FCF004210F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = NK82P83Q9D;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "EEG-EQUIPMENT-ASSISTUITests-Info.plist";
+				INFOPLIST_KEY_NSCameraUsageDescription = "We need camera access to detect faces.\n";
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "kadambi-murugan.EEG-EQUIPMENT-ASSISTUITests";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = "EEG EQUIPMENT ASSIST";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3051A7A92E320FCE004210F9 /* Build configuration list for PBXProject "EEG EQUIPMENT ASSIST" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3051A7D22E320FCF004210F9 /* Debug */,
+				3051A7D32E320FCF004210F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3051A7D42E320FCF004210F9 /* Build configuration list for PBXNativeTarget "EEG EQUIPMENT ASSIST" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3051A7D52E320FCF004210F9 /* Debug */,
+				3051A7D62E320FCF004210F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3051A7D72E320FCF004210F9 /* Build configuration list for PBXNativeTarget "EEG EQUIPMENT ASSISTTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3051A7D82E320FCF004210F9 /* Debug */,
+				3051A7D92E320FCF004210F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		3051A7DA2E320FCF004210F9 /* Build configuration list for PBXNativeTarget "EEG EQUIPMENT ASSISTUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3051A7DB2E320FCF004210F9 /* Debug */,
+				3051A7DC2E320FCF004210F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3051A7A62E320FCE004210F9 /* Project object */;
+}
