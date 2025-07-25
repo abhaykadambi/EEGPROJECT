@@ -24,7 +24,7 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         sceneView.delegate = self
         sceneView.automaticallyUpdatesLighting = true
 
-        // ✅ Rear camera + LiDAR config
+        // ✅ Use rear camera with LiDAR
         let config = ARWorldTrackingConfiguration()
         config.worldAlignment = .gravity
         config.sceneReconstruction = .meshWithClassification
@@ -46,7 +46,11 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
     }
 
     func placeCalibrationDot(on meshAnchor: ARMeshAnchor, with node: SCNNode) {
-        let center = meshAnchor.center
+        let transform = meshAnchor.transform
+        let center = SCNVector3(transform.columns.3.x,
+                                transform.columns.3.y,
+                                transform.columns.3.z)
+
         let calDot = makeDot(color: .green)
         calDot.position = SCNVector3(center.x, center.y + 0.05, center.z + 0.05)
         node.addChildNode(calDot)
@@ -60,14 +64,14 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         let base = reference.position
 
         let positions: [(String, SCNVector3)] = [
-            ("Fp1", SCNVector3(base.x - 0.03, base.y + 0.01, base.z)),
-            ("Fp2", SCNVector3(base.x + 0.03, base.y + 0.01, base.z)),
-            ("Fz",  SCNVector3(base.x, base.y + 0.02, base.z - 0.015)),
-            ("Cz",  SCNVector3(base.x, base.y + 0.025, base.z - 0.045)),
-            ("Pz",  SCNVector3(base.x, base.y + 0.025, base.z - 0.07)),
-            ("O1",  SCNVector3(base.x - 0.025, base.y + 0.02, base.z - 0.09)),
-            ("O2",  SCNVector3(base.x + 0.025, base.y + 0.02, base.z - 0.09)),
-            ("Inion", SCNVector3(base.x, base.y + 0.015, base.z - 0.1))
+            ("Fp1",   SCNVector3(base.x - 0.03,  base.y + 0.01, base.z)),
+            ("Fp2",   SCNVector3(base.x + 0.03,  base.y + 0.01, base.z)),
+            ("Fz",    SCNVector3(base.x,         base.y + 0.02, base.z - 0.015)),
+            ("Cz",    SCNVector3(base.x,         base.y + 0.025, base.z - 0.045)),
+            ("Pz",    SCNVector3(base.x,         base.y + 0.025, base.z - 0.07)),
+            ("O1",    SCNVector3(base.x - 0.025, base.y + 0.02, base.z - 0.09)),
+            ("O2",    SCNVector3(base.x + 0.025, base.y + 0.02, base.z - 0.09)),
+            ("Inion", SCNVector3(base.x,         base.y + 0.015, base.z - 0.1))
         ]
 
         for (label, position) in positions {
