@@ -3,7 +3,7 @@ import SwiftData
 
 struct ContentView: View {
     var body: some View {
-        FaceARView() // Replaces CameraView with AR-based EEG marker view
+        EEGOverlayView() // Replaces CameraView or FaceARView
             .edgesIgnoringSafeArea(.all)
     }
 }

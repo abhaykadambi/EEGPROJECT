@@ -6,5 +6,7 @@
 	<string>Used to track facial structure and project EEG reference points.
 
 </string>
+	<key>NSLiDARUsageDescription</key>
+	<string>Used to scan and project EEG points around the full head.</string>
 </dict>
 </plist>

@@ -19,6 +19,8 @@
 		3051A7E12E3215F8004210F9 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3051A7E02E3215F8004210F9 /* CameraViewController.swift */; };
 		3064C8482E32FE290002918F /* FaceARView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3064C8472E32FE290002918F /* FaceARView.swift */; };
 		3064C84A2E32FE9E0002918F /* FaceARViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3064C8492E32FE9E0002918F /* FaceARViewController.swift */; };
+		3064C84C2E33538B0002918F /* EEGOverlayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3064C84B2E33538B0002918F /* EEGOverlayViewController.swift */; };
+		3064C84E2E3353D80002918F /* EEGOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3064C84D2E3353D80002918F /* EEGOverlayView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -56,6 +58,8 @@
 		3051A7E22E321CA3004210F9 /* EEG-EQUIPMENT-ASSIST-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "EEG-EQUIPMENT-ASSIST-Info.plist"; sourceTree = SOURCE_ROOT; };
 		3064C8472E32FE290002918F /* FaceARView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceARView.swift; sourceTree = "<group>"; };
 		3064C8492E32FE9E0002918F /* FaceARViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FaceARViewController.swift; sourceTree = "<group>"; };
+		3064C84B2E33538B0002918F /* EEGOverlayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EEGOverlayViewController.swift; sourceTree = "<group>"; };
+		3064C84D2E3353D80002918F /* EEGOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EEGOverlayView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -109,10 +113,12 @@
 				3051A7E22E321CA3004210F9 /* EEG-EQUIPMENT-ASSIST-Info.plist */,
 				3051A7B12E320FCE004210F9 /* EEG_EQUIPMENT_ASSISTApp.swift */,
 				3051A7B32E320FCE004210F9 /* ContentView.swift */,
+				3064C84D2E3353D80002918F /* EEGOverlayView.swift */,
 				3051A7DE2E3215C2004210F9 /* CameraView.swift */,
 				3064C8472E32FE290002918F /* FaceARView.swift */,
 				3064C8492E32FE9E0002918F /* FaceARViewController.swift */,
 				3051A7E02E3215F8004210F9 /* CameraViewController.swift */,
+				3064C84B2E33538B0002918F /* EEGOverlayViewController.swift */,
 				3051A7B52E320FCE004210F9 /* Item.swift */,
 				3051A7B72E320FCF004210F9 /* Assets.xcassets */,
 				3051A7B92E320FCF004210F9 /* Preview Content */,
@@ -279,10 +285,12 @@
 				3064C8482E32FE290002918F /* FaceARView.swift in Sources */,
 				3064C84A2E32FE9E0002918F /* FaceARViewController.swift in Sources */,
 				3051A7B42E320FCE004210F9 /* ContentView.swift in Sources */,
+				3064C84C2E33538B0002918F /* EEGOverlayViewController.swift in Sources */,
 				3051A7E12E3215F8004210F9 /* CameraViewController.swift in Sources */,
 				3051A7B62E320FCE004210F9 /* Item.swift in Sources */,
 				3051A7B22E320FCE004210F9 /* EEG_EQUIPMENT_ASSISTApp.swift in Sources */,
 				3051A7DF2E3215C2004210F9 /* CameraView.swift in Sources */,
+				3064C84E2E3353D80002918F /* EEGOverlayView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
