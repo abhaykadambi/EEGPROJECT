@@ -15,7 +15,7 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
     var placedDots: [SCNNode] = []
     var hasCalibrated = false
     var calibrationNode: SCNNode?
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -24,18 +24,20 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         sceneView.delegate = self
         sceneView.automaticallyUpdatesLighting = true
 
+        // ✅ Rear camera + LiDAR config
         let config = ARWorldTrackingConfiguration()
+        config.worldAlignment = .gravity
         config.sceneReconstruction = .meshWithClassification
         config.environmentTexturing = .automatic
         config.frameSemantics = .sceneDepth
         config.planeDetection = [.horizontal, .vertical]
 
-        sceneView.session.run(config)
+        sceneView.session.run(config, options: [.resetTracking, .removeExistingAnchors])
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         guard let meshAnchor = anchor as? ARMeshAnchor else { return }
-        
+
         if !hasCalibrated {
             placeCalibrationDot(on: meshAnchor, with: node)
         } else {
@@ -44,9 +46,9 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
     }
 
     func placeCalibrationDot(on meshAnchor: ARMeshAnchor, with node: SCNNode) {
-        let headCenter = meshAnchor.center
+        let center = meshAnchor.center
         let calDot = makeDot(color: .green)
-        calDot.position = SCNVector3(headCenter.x, headCenter.y + 0.05, headCenter.z + 0.05)
+        calDot.position = SCNVector3(center.x, center.y + 0.05, center.z + 0.05)
         node.addChildNode(calDot)
         calibrationNode = calDot
         hasCalibrated = true
@@ -71,8 +73,10 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         for (label, position) in positions {
             let dot = makeDot(color: .red)
             dot.position = position
+
             let labelNode = makeLabel(text: label)
             labelNode.position = SCNVector3(position.x, position.y + 0.01, position.z)
+
             node.addChildNode(dot)
             node.addChildNode(labelNode)
             placedDots.append(dot)
@@ -89,6 +93,8 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         let textGeometry = SCNText(string: text, extrusionDepth: 0.1)
         textGeometry.firstMaterial?.diffuse.contents = UIColor.white
         textGeometry.font = UIFont.systemFont(ofSize: 0.1)
+        textGeometry.flatness = 0.1
+
         let textNode = SCNNode(geometry: textGeometry)
         textNode.scale = SCNVector3(0.004, 0.004, 0.004)
         return textNode
