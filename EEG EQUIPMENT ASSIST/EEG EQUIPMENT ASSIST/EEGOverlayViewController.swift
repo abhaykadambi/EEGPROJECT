@@ -23,10 +23,10 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
     var infoTextView: UITextView!
     var nextButton: UIButton!
     
-    // Face tracking properties
-    var faceAnchor: ARFaceAnchor?
+    // Tracking properties
     var headNode: SCNNode?
-    var isTrackingFace = false
+    var personAnchor: ARAnchor?
+    var isTrackingPerson = false
     
     enum CalibrationState {
         case scanning
@@ -268,7 +268,8 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         Green marker: Fpz (forehead reference)
         Blue marker: Inion (back reference)
         
-        Switching to face tracking mode - electrodes will now follow your head movements!
+        The electrodes will now follow your head movements in real-time!
+        Move your head to see the electrodes track with you.
         """
         
         instructionLabel.text = "EEG Electrodes Placed Successfully!"
@@ -277,11 +278,6 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         scanProgressView.progressTintColor = .green
         nextButton.setTitle("View Details", for: .normal)
         nextButton.isHidden = false
-        
-        // Switch to face tracking after a short delay
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.switchToFaceTracking()
-        }
     }
     
     func setupARConfiguration() {
@@ -300,17 +296,21 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         sceneView.session.run(config, options: [.resetTracking, .removeExistingAnchors])
     }
     
-    func switchToFaceTracking() {
-        // Switch to face tracking after electrode placement
-        guard ARFaceTrackingConfiguration.isSupported else {
-            print("Face tracking not supported on this device")
-            return
+    func switchToBodyTracking() {
+        // Keep using the same world tracking configuration
+        // The electrodes will stay in place and can be manually adjusted if needed
+        let config = ARWorldTrackingConfiguration()
+        config.worldAlignment = .gravity
+        config.sceneReconstruction = .meshWithClassification
+        config.environmentTexturing = .automatic
+        config.frameSemantics = .sceneDepth
+        
+        // Enable LiDAR-specific features
+        if ARWorldTrackingConfiguration.supportsSceneReconstruction(.meshWithClassification) {
+            config.sceneReconstruction = .meshWithClassification
         }
         
-        let faceConfig = ARFaceTrackingConfiguration()
-        faceConfig.worldAlignment = .gravity
-        
-        sceneView.session.run(faceConfig, options: [.resetTracking, .removeExistingAnchors])
+        sceneView.session.run(config, options: [.resetTracking, .removeExistingAnchors])
     }
 
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
@@ -325,33 +325,170 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
             }
         }
         
-        // Handle face anchor for real-time tracking
-        if let faceAnchor = anchor as? ARFaceAnchor {
-            self.faceAnchor = faceAnchor
-            self.isTrackingFace = true
+        // Handle person tracking for real-time electrode following
+        if let personAnchor = anchor as? ARAnchor {
+            self.personAnchor = personAnchor
+            self.isTrackingPerson = true
             
-            // Create a head node that will follow the face
+            // Create a head node that will follow the person
             if headNode == nil {
                 headNode = SCNNode()
                 node.addChildNode(headNode!)
                 
-                // If electrodes are already placed, attach them to the face
+                // If electrodes are already placed, attach them to the person
                 if currentState == .complete {
-                    attachElectrodesToFace()
+                    attachElectrodesToPerson()
                 }
             }
         }
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
-        // Face tracking updates happen automatically when electrodes are attached to face node
-        if let faceAnchor = anchor as? ARFaceAnchor {
-            self.faceAnchor = faceAnchor
+        // Update person tracking in real-time
+        if let personAnchor = anchor as? ARAnchor {
+            self.personAnchor = personAnchor
+            
+            // Update electrode positions based on person movement
+            if currentState == .complete && headNode != nil {
+                updateElectrodePositions(with: personAnchor)
+            }
         }
     }
     
-
+    func attachElectrodesToPerson() {
+        guard let headNode = headNode else { return }
+        
+        // Remove electrodes from scene root and attach to person
+        for node in eegNodes {
+            node.removeFromParentNode()
+            headNode.addChildNode(node)
+        }
+        
+        for node in calibrationNodes {
+            node.removeFromParentNode()
+            headNode.addChildNode(node)
+        }
+    }
     
+    func updateElectrodePositions(with personAnchor: ARAnchor) {
+        // Get the person's transform
+        let personTransform = personAnchor.transform
+        
+        // Update electrode positions based on person movement
+        // This will make the electrodes follow the person's head
+        for (index, node) in eegNodes.enumerated() {
+            let originalPosition = getOriginalElectrodePosition(for: index)
+            let updatedPosition = calculateUpdatedPosition(originalPosition, with: personTransform)
+            node.position = updatedPosition
+        }
+        
+        // Update calibration points
+        for (index, node) in calibrationNodes.enumerated() {
+            if index < calibrationPoints.count {
+                let originalPosition = calibrationPoints[index]
+                let updatedPosition = calculateUpdatedPosition(originalPosition, with: personTransform)
+                node.position = updatedPosition
+            }
+        }
+    }
+    
+    func calculateUpdatedPosition(_ originalPosition: SCNVector3, with transform: simd_float4x4) -> SCNVector3 {
+        // Apply person movement to the original position
+        let personPosition = SCNVector3(transform.columns.3.x, transform.columns.3.y, transform.columns.3.z)
+        
+        return SCNVector3(
+            personPosition.x + originalPosition.x * 0.1,
+            personPosition.y + originalPosition.y * 0.1,
+            personPosition.z + originalPosition.z * 0.1
+        )
+    }
+    
+    func getOriginalElectrodePosition(for index: Int) -> SCNVector3 {
+        // Return the original calculated position for each electrode
+        guard calibrationPoints.count == 2 else { return SCNVector3Zero }
+        
+        let forehead = calibrationPoints[0]
+        let inion = calibrationPoints[1]
+        let headLength = simd_distance(SIMD3<Float>(forehead), SIMD3<Float>(inion))
+        let headWidth = headLength * 0.8
+        
+        let direction = simd_normalize(SIMD3<Float>(inion) - SIMD3<Float>(forehead))
+        let up = SIMD3<Float>(0, 1, 0)
+        let right = simd_normalize(simd_cross(direction, up))
+        let left = -right
+        
+        // Return position based on electrode index
+        switch index / 2 { // Divide by 2 because each electrode has a dot and text
+        case 0: // Fp1
+            return SCNVector3(
+                forehead.x + left.x * headWidth * 0.1,
+                forehead.y + left.y * headWidth * 0.1,
+                forehead.z + left.z * headWidth * 0.1
+            )
+        case 1: // Fp2
+            return SCNVector3(
+                forehead.x + right.x * headWidth * 0.1,
+                forehead.y + right.y * headWidth * 0.1,
+                forehead.z + right.z * headWidth * 0.1
+            )
+        case 2: // Fz
+            return SCNVector3(
+                forehead.x + direction.x * headLength * 0.2,
+                forehead.y + direction.y * headLength * 0.2,
+                forehead.z + direction.z * headLength * 0.2
+            )
+        case 3: // Cz
+            return SCNVector3(
+                forehead.x + direction.x * headLength * 0.5,
+                forehead.y + direction.y * headLength * 0.5,
+                forehead.z + direction.z * headLength * 0.5
+            )
+        case 4: // Pz
+            return SCNVector3(
+                forehead.x + direction.x * headLength * 0.7,
+                forehead.y + direction.y * headLength * 0.7,
+                forehead.z + direction.z * headLength * 0.7
+            )
+        case 5: // O1
+            return SCNVector3(
+                inion.x + left.x * headWidth * 0.1,
+                inion.y + left.y * headWidth * 0.1,
+                inion.z + left.z * headWidth * 0.1
+            )
+        case 6: // O2
+            return SCNVector3(
+                inion.x + right.x * headWidth * 0.1,
+                inion.y + right.y * headWidth * 0.1,
+                inion.z + right.z * headWidth * 0.1
+            )
+        case 7: // T3
+            let headCenter = SCNVector3(
+                (forehead.x + inion.x) / 2,
+                (forehead.y + inion.y) / 2,
+                (forehead.z + inion.z) / 2
+            )
+            return SCNVector3(
+                headCenter.x + left.x * headWidth * 0.4,
+                headCenter.y + left.y * headWidth * 0.4,
+                headCenter.z + left.z * headWidth * 0.4
+            )
+        case 8: // T4
+            let headCenter = SCNVector3(
+                (forehead.x + inion.x) / 2,
+                (forehead.y + inion.y) / 2,
+                (forehead.z + inion.z) / 2
+            )
+            return SCNVector3(
+                headCenter.x + right.x * headWidth * 0.4,
+                headCenter.y + right.y * headWidth * 0.4,
+                headCenter.z + right.z * headWidth * 0.4
+            )
+        default:
+            return SCNVector3Zero
+        }
+    }
+
+
     func transitionToCalibration() {
         currentState = .placeForehead
         DispatchQueue.main.async {
@@ -449,8 +586,7 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
             eegNodes.append(text)
         }
         
-        // Switch to face tracking after electrode placement
-        switchToFaceTracking()
+
     }
     
     func calculateElectrodePositions(forehead: SCNVector3, inion: SCNVector3, headLength: Float, headWidth: Float) -> [(String, SCNVector3)] {
@@ -541,27 +677,14 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         return electrodes
     }
 
-    func attachElectrodesToFace() {
-        guard let headNode = headNode else { return }
-        
-        // Remove electrodes from scene root and attach to face
-        for node in eegNodes {
-            node.removeFromParentNode()
-            headNode.addChildNode(node)
-        }
-        
-        for node in calibrationNodes {
-            node.removeFromParentNode()
-            headNode.addChildNode(node)
-        }
-    }
+
 
     @objc func resetCalibration() {
         currentState = .scanning
         calibrationPoints.removeAll()
         meshAnchors.removeAll()
-        isTrackingFace = false
-        faceAnchor = nil
+        isTrackingPerson = false
+        personAnchor = nil
         headNode = nil
         
         // Remove all nodes
