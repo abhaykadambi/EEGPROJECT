@@ -27,6 +27,7 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
     var headNode: SCNNode?
     var personAnchor: ARAnchor?
     var isTrackingPerson = false
+    var trackingCheckTimer: Timer?
     
     enum CalibrationState {
         case scanning
@@ -270,6 +271,8 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         
         The electrodes will now follow your head movements in real-time!
         Move your head to see the electrodes track with you.
+        
+        Status: \(eegNodes.count) electrodes placed, tracking: \(isTrackingPerson ? "Active" : "Waiting...")
         """
         
         instructionLabel.text = "EEG Electrodes Placed Successfully!"
@@ -335,8 +338,8 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
                 headNode = SCNNode()
                 node.addChildNode(headNode!)
                 
-                // If electrodes are already placed, attach them to the person
-                if currentState == .complete {
+                // Only attach electrodes if they exist and we're in complete state
+                if currentState == .complete && !eegNodes.isEmpty {
                     attachElectrodesToPerson()
                 }
             }
@@ -348,15 +351,15 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         if let personAnchor = anchor as? ARAnchor {
             self.personAnchor = personAnchor
             
-            // Update electrode positions based on person movement
-            if currentState == .complete && headNode != nil {
+            // Only update if we have electrodes and are tracking
+            if currentState == .complete && headNode != nil && !eegNodes.isEmpty {
                 updateElectrodePositions(with: personAnchor)
             }
         }
     }
     
     func attachElectrodesToPerson() {
-        guard let headNode = headNode else { return }
+        guard let headNode = headNode, !eegNodes.isEmpty else { return }
         
         // Remove electrodes from scene root and attach to person
         for node in eegNodes {
@@ -368,6 +371,8 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
             node.removeFromParentNode()
             headNode.addChildNode(node)
         }
+        
+        print("Electrodes attached to person tracking")
     }
     
     func updateElectrodePositions(with personAnchor: ARAnchor) {
@@ -530,6 +535,7 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
             DispatchQueue.main.async {
                 self.placeEEGElectrodes()
                 self.showCompletionInfo()
+                self.startTrackingCheck()
             }
             
         default:
@@ -586,7 +592,12 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
             eegNodes.append(text)
         }
         
-
+        print("EEG electrodes placed: \(eegNodes.count) nodes")
+        
+        // Check if person tracking is already available
+        if isTrackingPerson && headNode != nil {
+            attachElectrodesToPerson()
+        }
     }
     
     func calculateElectrodePositions(forehead: SCNVector3, inion: SCNVector3, headLength: Float, headWidth: Float) -> [(String, SCNVector3)] {
@@ -687,6 +698,9 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         personAnchor = nil
         headNode = nil
         
+        // Stop tracking check timer
+        stopTrackingCheck()
+        
         // Remove all nodes
         calibrationNodes.forEach { $0.removeFromParentNode() }
         calibrationNodes.removeAll()
@@ -733,5 +747,29 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         textNode.position.x -= dx
         
         return textNode
+    }
+    
+    func startTrackingCheck() {
+        // Stop any existing timer
+        trackingCheckTimer?.invalidate()
+        
+        // Start checking for person tracking every 0.5 seconds
+        trackingCheckTimer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: true) { _ in
+            if self.currentState == .complete && !self.eegNodes.isEmpty {
+                // Check if we have person tracking but haven't attached electrodes yet
+                if self.isTrackingPerson && self.headNode != nil {
+                    // Check if electrodes are still attached to scene root
+                    if self.eegNodes.first?.parent == self.sceneView.scene.rootNode {
+                        print("Person tracking detected, attaching electrodes")
+                        self.attachElectrodesToPerson()
+                    }
+                }
+            }
+        }
+    }
+    
+    func stopTrackingCheck() {
+        trackingCheckTimer?.invalidate()
+        trackingCheckTimer = nil
     }
 }
