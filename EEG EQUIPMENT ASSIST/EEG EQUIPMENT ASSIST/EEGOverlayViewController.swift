@@ -23,6 +23,11 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
     var infoTextView: UITextView!
     var nextButton: UIButton!
     
+    // Face tracking properties
+    var faceAnchor: ARFaceAnchor?
+    var headNode: SCNNode?
+    var isTrackingFace = false
+    
     enum CalibrationState {
         case scanning
         case placeForehead
@@ -263,7 +268,7 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         Green marker: Fpz (forehead reference)
         Blue marker: Inion (back reference)
         
-        You can now place physical electrodes at these marked positions.
+        Switching to face tracking mode - electrodes will now follow your head movements!
         """
         
         instructionLabel.text = "EEG Electrodes Placed Successfully!"
@@ -272,9 +277,15 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         scanProgressView.progressTintColor = .green
         nextButton.setTitle("View Details", for: .normal)
         nextButton.isHidden = false
+        
+        // Switch to face tracking after a short delay
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.switchToFaceTracking()
+        }
     }
     
     func setupARConfiguration() {
+        // Start with world tracking for LiDAR scanning
         let config = ARWorldTrackingConfiguration()
         config.worldAlignment = .gravity
         config.sceneReconstruction = .meshWithClassification
@@ -288,6 +299,19 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         
         sceneView.session.run(config, options: [.resetTracking, .removeExistingAnchors])
     }
+    
+    func switchToFaceTracking() {
+        // Switch to face tracking after electrode placement
+        guard ARFaceTrackingConfiguration.isSupported else {
+            print("Face tracking not supported on this device")
+            return
+        }
+        
+        let faceConfig = ARFaceTrackingConfiguration()
+        faceConfig.worldAlignment = .gravity
+        
+        sceneView.session.run(faceConfig, options: [.resetTracking, .removeExistingAnchors])
+    }
 
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
         if let meshAnchor = anchor as? ARMeshAnchor {
@@ -300,7 +324,33 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
                 }
             }
         }
+        
+        // Handle face anchor for real-time tracking
+        if let faceAnchor = anchor as? ARFaceAnchor {
+            self.faceAnchor = faceAnchor
+            self.isTrackingFace = true
+            
+            // Create a head node that will follow the face
+            if headNode == nil {
+                headNode = SCNNode()
+                node.addChildNode(headNode!)
+                
+                // If electrodes are already placed, attach them to the face
+                if currentState == .complete {
+                    attachElectrodesToFace()
+                }
+            }
+        }
     }
+    
+    func renderer(_ renderer: SCNSceneRenderer, didUpdate node: SCNNode, for anchor: ARAnchor) {
+        // Face tracking updates happen automatically when electrodes are attached to face node
+        if let faceAnchor = anchor as? ARFaceAnchor {
+            self.faceAnchor = faceAnchor
+        }
+    }
+    
+
     
     func transitionToCalibration() {
         currentState = .placeForehead
@@ -398,6 +448,9 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
             sceneView.scene.rootNode.addChildNode(text)
             eegNodes.append(text)
         }
+        
+        // Switch to face tracking after electrode placement
+        switchToFaceTracking()
     }
     
     func calculateElectrodePositions(forehead: SCNVector3, inion: SCNVector3, headLength: Float, headWidth: Float) -> [(String, SCNVector3)] {
@@ -488,10 +541,28 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         return electrodes
     }
 
+    func attachElectrodesToFace() {
+        guard let headNode = headNode else { return }
+        
+        // Remove electrodes from scene root and attach to face
+        for node in eegNodes {
+            node.removeFromParentNode()
+            headNode.addChildNode(node)
+        }
+        
+        for node in calibrationNodes {
+            node.removeFromParentNode()
+            headNode.addChildNode(node)
+        }
+    }
+
     @objc func resetCalibration() {
         currentState = .scanning
         calibrationPoints.removeAll()
         meshAnchors.removeAll()
+        isTrackingFace = false
+        faceAnchor = nil
+        headNode = nil
         
         // Remove all nodes
         calibrationNodes.forEach { $0.removeFromParentNode() }
@@ -509,6 +580,10 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         config.sceneReconstruction = .meshWithClassification
         config.environmentTexturing = .automatic
         config.frameSemantics = .sceneDepth
+        
+        if ARWorldTrackingConfiguration.supportsSceneReconstruction(.meshWithClassification) {
+            config.sceneReconstruction = .meshWithClassification
+        }
         
         sceneView.session.run(config, options: [.resetTracking, .removeExistingAnchors])
     }
