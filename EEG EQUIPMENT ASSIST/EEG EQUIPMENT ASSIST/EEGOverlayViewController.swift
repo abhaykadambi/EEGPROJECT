@@ -247,17 +247,18 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         let completionText = """
         ✅ Calibration Complete!
         
-        The app has automatically placed EEG electrodes according to the international 10-20 system.
+        The app has automatically placed all 21 EEG electrodes according to the international 10-20 system.
         
         Electrode Positions:
         • Fp1, Fp2: Frontal poles (left/right)
-        • Fz: Frontal midline
-        • Cz: Central midline (vertex)
-        • Pz: Parietal midline
-        • O1, O2: Occipital (left/right)
-        • T3, T4: Temporal (left/right)
+        • Fz, F3, F4, F7, F8: Frontal region
+        • Cz, C3, C4: Central region (vertex and lateral)
+        • T3, T4, T5, T6: Temporal regions (mid and posterior)
+        • Pz, P3, P4: Parietal region
+        • O1, O2: Occipital region (back of head)
+        • A1, A2: Aural reference points (earlobes)
         
-        The 10-20 system ensures standardized electrode placement across different head sizes.
+        The 10-20 system ensures standardized electrode placement across different head sizes with comprehensive coverage of the entire scalp.
         
         Red markers show electrode positions.
         Green marker: Fpz (forehead reference)
@@ -267,7 +268,7 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         """
         
         instructionLabel.text = "EEG Electrodes Placed Successfully!"
-        calibrationStepLabel.text = "Complete: 10-20 System Applied"
+        calibrationStepLabel.text = "Complete: Full 10-20 System Applied"
         infoTextView.text = completionText
         scanProgressView.progressTintColor = .green
         nextButton.setTitle("View Details", for: .normal)
@@ -417,7 +418,7 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         
         var electrodes: [(String, SCNVector3)] = []
         
-        // Frontal electrodes (10% from forehead)
+        // 1. FRONTAL POLAR (Fp1, Fp2) - 10% from forehead, 10% from midline
         let fp1 = SCNVector3(
             forehead.x + left.x * headWidth * 0.1,
             forehead.y + left.y * headWidth * 0.1,
@@ -432,15 +433,45 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         )
         electrodes.append(("Fp2", fp2))
         
-        // Central electrodes (20% from forehead)
+        // 2. FRONTAL MIDLINE (Fz) - 10% from forehead
         let fz = SCNVector3(
-            forehead.x + direction.x * headLength * 0.2,
-            forehead.y + direction.y * headLength * 0.2,
-            forehead.z + direction.z * headLength * 0.2
+            forehead.x + direction.x * headLength * 0.1,
+            forehead.y + direction.y * headLength * 0.1,
+            forehead.z + direction.z * headLength * 0.1
         )
         electrodes.append(("Fz", fz))
         
-        // Midline electrodes
+        // 3. FRONTAL LATERAL (F3, F4) - 20% from forehead, 20% from midline
+        let f3 = SCNVector3(
+            fz.x + left.x * headWidth * 0.2,
+            fz.y + left.y * headWidth * 0.2,
+            fz.z + left.z * headWidth * 0.2
+        )
+        electrodes.append(("F3", f3))
+        
+        let f4 = SCNVector3(
+            fz.x + right.x * headWidth * 0.2,
+            fz.y + right.y * headWidth * 0.2,
+            fz.z + right.z * headWidth * 0.2
+        )
+        electrodes.append(("F4", f4))
+        
+        // 4. FRONTAL TEMPORAL (F7, F8) - 20% from forehead, 40% from midline
+        let f7 = SCNVector3(
+            fz.x + left.x * headWidth * 0.4,
+            fz.y + left.y * headWidth * 0.4,
+            fz.z + left.z * headWidth * 0.4
+        )
+        electrodes.append(("F7", f7))
+        
+        let f8 = SCNVector3(
+            fz.x + right.x * headWidth * 0.4,
+            fz.y + right.y * headWidth * 0.4,
+            fz.z + right.z * headWidth * 0.4
+        )
+        electrodes.append(("F8", f8))
+        
+        // 5. CENTRAL MIDLINE (Cz) - 50% from forehead (vertex)
         let cz = SCNVector3(
             forehead.x + direction.x * headLength * 0.5,
             forehead.y + direction.y * headLength * 0.5,
@@ -448,6 +479,52 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         )
         electrodes.append(("Cz", cz))
         
+        // 6. CENTRAL LATERAL (C3, C4) - 50% from forehead, 20% from midline
+        let c3 = SCNVector3(
+            cz.x + left.x * headWidth * 0.2,
+            cz.y + left.y * headWidth * 0.2,
+            cz.z + left.z * headWidth * 0.2
+        )
+        electrodes.append(("C3", c3))
+        
+        let c4 = SCNVector3(
+            cz.x + right.x * headWidth * 0.2,
+            cz.y + right.y * headWidth * 0.2,
+            cz.z + right.z * headWidth * 0.2
+        )
+        electrodes.append(("C4", c4))
+        
+        // 7. TEMPORAL MID (T3, T4) - 50% from forehead, 40% from midline
+        let t3 = SCNVector3(
+            cz.x + left.x * headWidth * 0.4,
+            cz.y + left.y * headWidth * 0.4,
+            cz.z + left.z * headWidth * 0.4
+        )
+        electrodes.append(("T3", t3))
+        
+        let t4 = SCNVector3(
+            cz.x + right.x * headWidth * 0.4,
+            cz.y + right.y * headWidth * 0.4,
+            cz.z + right.z * headWidth * 0.4
+        )
+        electrodes.append(("T4", t4))
+        
+        // 8. AURAL REFERENCE (A1, A2) - Near earlobes, 50% from forehead, 50% from midline
+        let a1 = SCNVector3(
+            cz.x + left.x * headWidth * 0.5,
+            cz.y + left.y * headWidth * 0.5,
+            cz.z + left.z * headWidth * 0.5
+        )
+        electrodes.append(("A1", a1))
+        
+        let a2 = SCNVector3(
+            cz.x + right.x * headWidth * 0.5,
+            cz.y + right.y * headWidth * 0.5,
+            cz.z + right.z * headWidth * 0.5
+        )
+        electrodes.append(("A2", a2))
+        
+        // 9. PARIETAL MIDLINE (Pz) - 70% from forehead
         let pz = SCNVector3(
             forehead.x + direction.x * headLength * 0.7,
             forehead.y + direction.y * headLength * 0.7,
@@ -455,7 +532,37 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         )
         electrodes.append(("Pz", pz))
         
-        // Occipital electrodes (10% from inion)
+        // 10. PARIETAL LATERAL (P3, P4) - 70% from forehead, 20% from midline
+        let p3 = SCNVector3(
+            pz.x + left.x * headWidth * 0.2,
+            pz.y + left.y * headWidth * 0.2,
+            pz.z + left.z * headWidth * 0.2
+        )
+        electrodes.append(("P3", p3))
+        
+        let p4 = SCNVector3(
+            pz.x + right.x * headWidth * 0.2,
+            pz.y + right.y * headWidth * 0.2,
+            pz.z + right.z * headWidth * 0.2
+        )
+        electrodes.append(("P4", p4))
+        
+        // 11. TEMPORAL POSTERIOR (T5, T6) - 70% from forehead, 40% from midline
+        let t5 = SCNVector3(
+            pz.x + left.x * headWidth * 0.4,
+            pz.y + left.y * headWidth * 0.4,
+            pz.z + left.z * headWidth * 0.4
+        )
+        electrodes.append(("T5", t5))
+        
+        let t6 = SCNVector3(
+            pz.x + right.x * headWidth * 0.4,
+            pz.y + right.y * headWidth * 0.4,
+            pz.z + right.z * headWidth * 0.4
+        )
+        electrodes.append(("T6", t6))
+        
+        // 12. OCCIPITAL (O1, O2) - 10% from inion, 10% from midline
         let o1 = SCNVector3(
             inion.x + left.x * headWidth * 0.1,
             inion.y + left.y * headWidth * 0.1,
@@ -469,21 +576,6 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
             inion.z + right.z * headWidth * 0.1
         )
         electrodes.append(("O2", o2))
-        
-        // Temporal electrodes
-        let t3 = SCNVector3(
-            headCenter.x + left.x * headWidth * 0.4,
-            headCenter.y + left.y * headWidth * 0.4,
-            headCenter.z + left.z * headWidth * 0.4
-        )
-        electrodes.append(("T3", t3))
-        
-        let t4 = SCNVector3(
-            headCenter.x + right.x * headWidth * 0.4,
-            headCenter.y + right.y * headWidth * 0.4,
-            headCenter.z + right.z * headWidth * 0.4
-        )
-        electrodes.append(("T4", t4))
         
         return electrodes
     }
