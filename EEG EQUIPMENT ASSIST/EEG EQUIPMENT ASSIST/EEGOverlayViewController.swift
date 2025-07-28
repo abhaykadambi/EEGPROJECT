@@ -388,19 +388,45 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
             headWidth: headWidth
         )
         
-        for (label, position) in electrodes {
+        for (label, flatPosition) in electrodes {
+            // Project the electrode position onto the actual head surface
+            let surfacePosition = projectElectrodeToSurface(position: flatPosition)
+            
             let electrode = makeDot(color: .red, radius: 0.006)
-            electrode.position = position
+            electrode.position = surfacePosition
             sceneView.scene.rootNode.addChildNode(electrode)
             eegNodes.append(electrode)
             
             let text = makeLabel(text: label)
-            text.position = SCNVector3(position.x, position.y + 0.012, position.z)
+            text.position = SCNVector3(surfacePosition.x, surfacePosition.y + 0.012, surfacePosition.z)
             sceneView.scene.rootNode.addChildNode(text)
             eegNodes.append(text)
         }
     }
     
+    // Simple surface projection using ARKit ray casting
+    func projectElectrodeToSurface(position: SCNVector3) -> SCNVector3 {
+        // Cast a ray downward from above the position to find the head surface
+        let rayStart = SCNVector3(position.x, position.y + 0.2, position.z) // Start 20cm above
+        let rayEnd = SCNVector3(position.x, position.y - 0.2, position.z)   // End 20cm below
+        
+        // Use SceneKit's built-in ray casting against the scene
+        let hitResults = sceneView.scene.rootNode.hitTestWithSegment(
+            from: rayStart,
+            to: rayEnd,
+            options: [
+                "searchMode": SCNHitTestSearchMode.closest.rawValue,
+                "ignoreHiddenNodes": true
+            ]
+        )
+        
+        if let hitResult = hitResults.first {
+            return hitResult.worldCoordinates
+        }
+        
+        return position // Fallback to original position
+    }
+
     func calculateElectrodePositions(forehead: SCNVector3, inion: SCNVector3, headLength: Float, headWidth: Float) -> [(String, SCNVector3)] {
         let headCenter = SCNVector3(
             (forehead.x + inion.x) / 2,
