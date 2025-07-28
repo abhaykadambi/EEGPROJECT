@@ -654,4 +654,32 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         
         return textNode
     }
+    
+    // Helper function to convert world position to screen coordinates
+    func convertWorldPositionToScreen(_ worldPosition: SCNVector3) -> CGPoint {
+        // Get the current camera frame
+        guard let currentFrame = sceneView.session.currentFrame else {
+            return CGPoint(x: sceneView.bounds.midX, y: sceneView.bounds.midY)
+        }
+        
+        let cameraTransform = currentFrame.camera.transform
+        let projectionMatrix = currentFrame.camera.projectionMatrix
+        
+        // Convert world position to camera space
+        let worldVector = simd_float4(worldPosition.x, worldPosition.y, worldPosition.z, 1.0)
+        let cameraSpaceVector = simd_mul(cameraTransform, worldVector)
+        
+        // Apply projection
+        let projectedVector = simd_mul(projectionMatrix, cameraSpaceVector)
+        
+        // Convert to normalized device coordinates
+        let normalizedX = projectedVector[0] / projectedVector[3]
+        let normalizedY = projectedVector[1] / projectedVector[3]
+        
+        // Convert to screen coordinates with proper type conversion
+        let screenX = CGFloat(normalizedX + 1.0) * 0.5 * sceneView.bounds.width
+        let screenY = CGFloat(1.0 - normalizedY) * 0.5 * sceneView.bounds.height
+        
+        return CGPoint(x: screenX, y: screenY)
+    }
 }
