@@ -27,6 +27,7 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         case scanning
         case placeForehead
         case placeBackOfHead
+        case placeVertex  // NEW: Add vertex calibration step
         case complete
     }
     
@@ -139,8 +140,8 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         
         The process:
         1. Scan the person's head with LiDAR
-        2. Mark two key anatomical points
-        3. View automatic electrode placement
+        2. Mark three key anatomical points
+        3. View automatic electrode placement with arc-based positioning
         
         Tap "Next" to begin the head scanning process.
         """
@@ -158,6 +159,8 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
             showForeheadInstructions()
         case .placeBackOfHead:
             showBackOfHeadInstructions()
+        case .placeVertex:
+            showVertexInstructions()
         case .complete:
             showCompletionInfo()
         }
@@ -174,12 +177,13 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         
         Instructions:
         • Walk slowly around the person in a circle
+        • Make sure to scan the TOP of the head thoroughly
         • Keep the device at arm's length
         • Ensure good lighting
         • Avoid rapid movements
         
         The progress bar shows scanning completion.
-        When complete, you'll be prompted to place calibration markers.
+        When complete, you'll be prompted to place three calibration markers.
         
         This creates the foundation for accurate electrode placement.
         """
@@ -243,11 +247,36 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         scanProgressView.progressTintColor = .orange
     }
     
+    func showVertexInstructions() {
+        let vertexText = """
+        👆 Step 4: Top of Head Calibration
+        
+        You need to mark the Cz position (vertex) on the top of the head.
+        
+        Cz Location:
+        • Top center of the head (vertex)
+        • Highest point when looking down at the head
+        • This is the reference point for central electrodes
+        
+        How to mark:
+        1. Look down at the person's head from above
+        2. Tap exactly on the highest point (vertex)
+        3. A purple marker will appear
+        
+        This point helps establish the head height and curvature.
+        """
+        
+        instructionLabel.text = "Tap on the top center of the head (Cz position)"
+        calibrationStepLabel.text = "Step 4: Mark Top of Head (Cz)"
+        infoTextView.text = vertexText
+        scanProgressView.progressTintColor = .purple
+    }
+    
     func showCompletionInfo() {
         let completionText = """
         ✅ Calibration Complete!
         
-        The app has automatically placed all 21 EEG electrodes according to the international 10-20 system.
+        The app has automatically placed all 21 EEG electrodes according to the international 10-20 system using arc-based positioning.
         
         Electrode Positions:
         • Fp1, Fp2: Frontal poles (left/right)
@@ -260,9 +289,12 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         
         The 10-20 system ensures standardized electrode placement across different head sizes with comprehensive coverage of the entire scalp.
         
+        Arc-based positioning follows the natural curvature of the head for more accurate placement.
+        
         Red markers show electrode positions.
         Green marker: Fpz (forehead reference)
         Blue marker: Inion (back reference)
+        Purple marker: Cz (vertex reference)
         
         You can now place physical electrodes at these marked positions.
         """
@@ -340,6 +372,14 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         case .placeBackOfHead:
             placeCalibrationPoint(at: position, label: "Inion", color: .blue)
             calibrationPoints.append(position)
+            currentState = .placeVertex  // NEW: Go to vertex instead of complete
+            DispatchQueue.main.async {
+                self.showVertexInstructions()
+            }
+            
+        case .placeVertex:  // NEW: Handle vertex calibration
+            placeCalibrationPoint(at: position, label: "Cz", color: .purple)
+            calibrationPoints.append(position)
             currentState = .complete
             DispatchQueue.main.async {
                 self.placeEEGElectrodes()
@@ -364,33 +404,28 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
     }
     
     func placeEEGElectrodes() {
-        guard calibrationPoints.count == 2 else { return }
+        guard calibrationPoints.count == 3 else { return } // Changed from 2 to 3
         
         let forehead = calibrationPoints[0]  // Fpz
         let inion = calibrationPoints[1]     // Inion
+        let vertex = calibrationPoints[2]    // Cz (NEW)
         
         // Calculate head dimensions and orientation
         let headLength = simd_distance(SIMD3<Float>(forehead), SIMD3<Float>(inion))
-        let headCenter = SCNVector3(
-            (forehead.x + inion.x) / 2,
-            (forehead.y + inion.y) / 2,
-            (forehead.z + inion.z) / 2
-        )
-        
-        // Calculate head width (approximate)
         let headWidth = headLength * 0.8 // Typical head width is about 80% of length
         
-        // Place electrodes according to 10-20 system
+        // Place electrodes according to 10-20 system with arc-based positioning
         let electrodes = calculateElectrodePositions(
             forehead: forehead,
             inion: inion,
+            vertex: vertex,  // NEW: Use actual vertex point
             headLength: headLength,
             headWidth: headWidth
         )
         
-        for (label, flatPosition) in electrodes {
+        for (label, arcPosition) in electrodes {
             // Project the electrode position onto the actual head surface
-            let surfacePosition = projectElectrodeToSurface(position: flatPosition)
+            let surfacePosition = projectElectrodeToSurface(position: arcPosition)
             
             let electrode = makeDot(color: .red, radius: 0.006)
             electrode.position = surfacePosition
@@ -427,181 +462,68 @@ class EEGOverlayViewController: UIViewController, ARSCNViewDelegate {
         return position // Fallback to original position
     }
 
-    func calculateElectrodePositions(forehead: SCNVector3, inion: SCNVector3, headLength: Float, headWidth: Float) -> [(String, SCNVector3)] {
+    func calculateElectrodePositions(forehead: SCNVector3, inion: SCNVector3, vertex: SCNVector3, headLength: Float, headWidth: Float) -> [(String, SCNVector3)] {
+        // Calculate head center and orientation vectors
         let headCenter = SCNVector3(
             (forehead.x + inion.x) / 2,
             (forehead.y + inion.y) / 2,
             (forehead.z + inion.z) / 2
         )
         
-        // Calculate the direction vector from forehead to inion
-        let direction = simd_normalize(SIMD3<Float>(inion) - SIMD3<Float>(forehead))
-        
-        // Calculate perpendicular direction for left-right positioning
+        // Direction vectors
+        let frontToBack = simd_normalize(SIMD3<Float>(inion) - SIMD3<Float>(forehead))
         let up = SIMD3<Float>(0, 1, 0)
-        let right = simd_normalize(simd_cross(direction, up))
-        let left = -right
+        let leftToRight = simd_normalize(simd_cross(frontToBack, up))
         
         var electrodes: [(String, SCNVector3)] = []
         
-        // 1. FRONTAL POLAR (Fp1, Fp2) - 10% from forehead, 10% from midline
-        let fp1 = SCNVector3(
-            forehead.x + left.x * headWidth * 0.1,
-            forehead.y + left.y * headWidth * 0.1,
-            forehead.z + left.z * headWidth * 0.1
-        )
-        electrodes.append(("Fp1", fp1))
+        // Helper function to create arc-based positions
+        func createArcPosition(basePoint: SCNVector3, arcAngle: Float, lateralOffset: Float, heightOffset: Float) -> SCNVector3 {
+            // Create an arc from the base point
+            let arcRadius = headWidth * 0.3 // Adjust based on head size
+            let arcX = basePoint.x + leftToRight.x * lateralOffset
+            let arcY = basePoint.y + heightOffset
+            let arcZ = basePoint.z + leftToRight.z * lateralOffset
+            
+            // Apply arc curvature
+            let curvature = sin(arcAngle) * arcRadius
+            return SCNVector3(arcX, arcY + curvature, arcZ)
+        }
         
-        let fp2 = SCNVector3(
-            forehead.x + right.x * headWidth * 0.1,
-            forehead.y + right.y * headWidth * 0.1,
-            forehead.z + right.z * headWidth * 0.1
-        )
-        electrodes.append(("Fp2", fp2))
+        // Frontal arc (Fp1, Fp2, Fz, F3, F4, F7, F8)
+        let frontalBase = forehead
+        electrodes.append(("Fp1", createArcPosition(basePoint: frontalBase, arcAngle: 0.3, lateralOffset: -headWidth * 0.1, heightOffset: 0)))
+        electrodes.append(("Fp2", createArcPosition(basePoint: frontalBase, arcAngle: 0.3, lateralOffset: headWidth * 0.1, heightOffset: 0)))
+        electrodes.append(("Fz", createArcPosition(basePoint: frontalBase, arcAngle: 0.2, lateralOffset: 0, heightOffset: headLength * 0.1)))
+        electrodes.append(("F3", createArcPosition(basePoint: frontalBase, arcAngle: 0.4, lateralOffset: -headWidth * 0.2, heightOffset: headLength * 0.1)))
+        electrodes.append(("F4", createArcPosition(basePoint: frontalBase, arcAngle: 0.4, lateralOffset: headWidth * 0.2, heightOffset: headLength * 0.1)))
+        electrodes.append(("F7", createArcPosition(basePoint: frontalBase, arcAngle: 0.6, lateralOffset: -headWidth * 0.4, heightOffset: headLength * 0.1)))
+        electrodes.append(("F8", createArcPosition(basePoint: frontalBase, arcAngle: 0.6, lateralOffset: headWidth * 0.4, heightOffset: headLength * 0.1)))
         
-        // 2. FRONTAL MIDLINE (Fz) - 10% from forehead
-        let fz = SCNVector3(
-            forehead.x + direction.x * headLength * 0.1,
-            forehead.y + direction.y * headLength * 0.1,
-            forehead.z + direction.z * headLength * 0.1
-        )
-        electrodes.append(("Fz", fz))
+        // Central arc (Cz, C3, C4, T3, T4, A1, A2)
+        electrodes.append(("Cz", vertex)) // Vertex is already the Cz position
+        electrodes.append(("C3", createArcPosition(basePoint: vertex, arcAngle: 0.3, lateralOffset: -headWidth * 0.2, heightOffset: 0)))
+        electrodes.append(("C4", createArcPosition(basePoint: vertex, arcAngle: 0.3, lateralOffset: headWidth * 0.2, heightOffset: 0)))
+        electrodes.append(("T3", createArcPosition(basePoint: vertex, arcAngle: 0.5, lateralOffset: -headWidth * 0.4, heightOffset: 0)))
+        electrodes.append(("T4", createArcPosition(basePoint: vertex, arcAngle: 0.5, lateralOffset: headWidth * 0.4, heightOffset: 0)))
+        electrodes.append(("A1", createArcPosition(basePoint: vertex, arcAngle: 0.7, lateralOffset: -headWidth * 0.5, heightOffset: 0)))
+        electrodes.append(("A2", createArcPosition(basePoint: vertex, arcAngle: 0.7, lateralOffset: headWidth * 0.5, heightOffset: 0)))
         
-        // 3. FRONTAL LATERAL (F3, F4) - 20% from forehead, 20% from midline
-        let f3 = SCNVector3(
-            fz.x + left.x * headWidth * 0.2,
-            fz.y + left.y * headWidth * 0.2,
-            fz.z + left.z * headWidth * 0.2
+        // Parietal arc (Pz, P3, P4, T5, T6)
+        let parietalBase = SCNVector3(
+            forehead.x + frontToBack.x * headLength * 0.7,
+            forehead.y + frontToBack.y * headLength * 0.7,
+            forehead.z + frontToBack.z * headLength * 0.7
         )
-        electrodes.append(("F3", f3))
+        electrodes.append(("Pz", createArcPosition(basePoint: parietalBase, arcAngle: 0.2, lateralOffset: 0, heightOffset: 0)))
+        electrodes.append(("P3", createArcPosition(basePoint: parietalBase, arcAngle: 0.4, lateralOffset: -headWidth * 0.2, heightOffset: 0)))
+        electrodes.append(("P4", createArcPosition(basePoint: parietalBase, arcAngle: 0.4, lateralOffset: headWidth * 0.2, heightOffset: 0)))
+        electrodes.append(("T5", createArcPosition(basePoint: parietalBase, arcAngle: 0.6, lateralOffset: -headWidth * 0.4, heightOffset: 0)))
+        electrodes.append(("T6", createArcPosition(basePoint: parietalBase, arcAngle: 0.6, lateralOffset: headWidth * 0.4, heightOffset: 0)))
         
-        let f4 = SCNVector3(
-            fz.x + right.x * headWidth * 0.2,
-            fz.y + right.y * headWidth * 0.2,
-            fz.z + right.z * headWidth * 0.2
-        )
-        electrodes.append(("F4", f4))
-        
-        // 4. FRONTAL TEMPORAL (F7, F8) - 20% from forehead, 40% from midline
-        let f7 = SCNVector3(
-            fz.x + left.x * headWidth * 0.4,
-            fz.y + left.y * headWidth * 0.4,
-            fz.z + left.z * headWidth * 0.4
-        )
-        electrodes.append(("F7", f7))
-        
-        let f8 = SCNVector3(
-            fz.x + right.x * headWidth * 0.4,
-            fz.y + right.y * headWidth * 0.4,
-            fz.z + right.z * headWidth * 0.4
-        )
-        electrodes.append(("F8", f8))
-        
-        // 5. CENTRAL MIDLINE (Cz) - 50% from forehead (vertex)
-        let cz = SCNVector3(
-            forehead.x + direction.x * headLength * 0.5,
-            forehead.y + direction.y * headLength * 0.5,
-            forehead.z + direction.z * headLength * 0.5
-        )
-        electrodes.append(("Cz", cz))
-        
-        // 6. CENTRAL LATERAL (C3, C4) - 50% from forehead, 20% from midline
-        let c3 = SCNVector3(
-            cz.x + left.x * headWidth * 0.2,
-            cz.y + left.y * headWidth * 0.2,
-            cz.z + left.z * headWidth * 0.2
-        )
-        electrodes.append(("C3", c3))
-        
-        let c4 = SCNVector3(
-            cz.x + right.x * headWidth * 0.2,
-            cz.y + right.y * headWidth * 0.2,
-            cz.z + right.z * headWidth * 0.2
-        )
-        electrodes.append(("C4", c4))
-        
-        // 7. TEMPORAL MID (T3, T4) - 50% from forehead, 40% from midline
-        let t3 = SCNVector3(
-            cz.x + left.x * headWidth * 0.4,
-            cz.y + left.y * headWidth * 0.4,
-            cz.z + left.z * headWidth * 0.4
-        )
-        electrodes.append(("T3", t3))
-        
-        let t4 = SCNVector3(
-            cz.x + right.x * headWidth * 0.4,
-            cz.y + right.y * headWidth * 0.4,
-            cz.z + right.z * headWidth * 0.4
-        )
-        electrodes.append(("T4", t4))
-        
-        // 8. AURAL REFERENCE (A1, A2) - Near earlobes, 50% from forehead, 50% from midline
-        let a1 = SCNVector3(
-            cz.x + left.x * headWidth * 0.5,
-            cz.y + left.y * headWidth * 0.5,
-            cz.z + left.z * headWidth * 0.5
-        )
-        electrodes.append(("A1", a1))
-        
-        let a2 = SCNVector3(
-            cz.x + right.x * headWidth * 0.5,
-            cz.y + right.y * headWidth * 0.5,
-            cz.z + right.z * headWidth * 0.5
-        )
-        electrodes.append(("A2", a2))
-        
-        // 9. PARIETAL MIDLINE (Pz) - 70% from forehead
-        let pz = SCNVector3(
-            forehead.x + direction.x * headLength * 0.7,
-            forehead.y + direction.y * headLength * 0.7,
-            forehead.z + direction.z * headLength * 0.7
-        )
-        electrodes.append(("Pz", pz))
-        
-        // 10. PARIETAL LATERAL (P3, P4) - 70% from forehead, 20% from midline
-        let p3 = SCNVector3(
-            pz.x + left.x * headWidth * 0.2,
-            pz.y + left.y * headWidth * 0.2,
-            pz.z + left.z * headWidth * 0.2
-        )
-        electrodes.append(("P3", p3))
-        
-        let p4 = SCNVector3(
-            pz.x + right.x * headWidth * 0.2,
-            pz.y + right.y * headWidth * 0.2,
-            pz.z + right.z * headWidth * 0.2
-        )
-        electrodes.append(("P4", p4))
-        
-        // 11. TEMPORAL POSTERIOR (T5, T6) - 70% from forehead, 40% from midline
-        let t5 = SCNVector3(
-            pz.x + left.x * headWidth * 0.4,
-            pz.y + left.y * headWidth * 0.4,
-            pz.z + left.z * headWidth * 0.4
-        )
-        electrodes.append(("T5", t5))
-        
-        let t6 = SCNVector3(
-            pz.x + right.x * headWidth * 0.4,
-            pz.y + right.y * headWidth * 0.4,
-            pz.z + right.z * headWidth * 0.4
-        )
-        electrodes.append(("T6", t6))
-        
-        // 12. OCCIPITAL (O1, O2) - 10% from inion, 10% from midline
-        let o1 = SCNVector3(
-            inion.x + left.x * headWidth * 0.1,
-            inion.y + left.y * headWidth * 0.1,
-            inion.z + left.z * headWidth * 0.1
-        )
-        electrodes.append(("O1", o1))
-        
-        let o2 = SCNVector3(
-            inion.x + right.x * headWidth * 0.1,
-            inion.y + right.y * headWidth * 0.1,
-            inion.z + right.z * headWidth * 0.1
-        )
-        electrodes.append(("O2", o2))
+        // Occipital arc (O1, O2)
+        electrodes.append(("O1", createArcPosition(basePoint: inion, arcAngle: 0.3, lateralOffset: -headWidth * 0.1, heightOffset: 0)))
+        electrodes.append(("O2", createArcPosition(basePoint: inion, arcAngle: 0.3, lateralOffset: headWidth * 0.1, heightOffset: 0)))
         
         return electrodes
     }
